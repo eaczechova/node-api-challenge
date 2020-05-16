@@ -40,13 +40,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+The first part I’ve learnt about routing so that is how an application endpoint respond to clients request that includes using Express methods corresponding to HTTP method (and also CRUD operations). The second part of Express I have got to know is writing and using middleware.
+
 - [ ] Describe Middleware?
+
+It’s a function that takes a request object and either returns response to the client or passes control to another middleware function. One of express middleware examples is route handling function.
 
 - [ ] Describe a Resource?
 
+Resource is a primary data representation in REST. It can be any information that can be named. Examples of a resource can be system users, user accounts or network devices.
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+API can return status code that conveys the results of a client’s request. Request starting with 2xx, indicated that request was accepted successfully.
+
 - [ ] How can we partition our application into sub-applications?
+
+Express Router let us split application into different files, which creates sub-applications. We can separate the main server file from the file handling the routes.
 
 ## Minimum Viable Product
 
