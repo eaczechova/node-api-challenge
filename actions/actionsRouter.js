@@ -4,51 +4,75 @@ const actions = require('../data/helpers/actionModel');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-	// console.log(req.params.id);
-	actions.get(req.query).then((action) => {
-		res.status(200).json(action);
+	actions.get(req.project_id).then((actions) => {
+		res.status(200).json(actions);
 	});
 });
 
-// project_id
+router.post('/:id', (req, res) => {
+	const newAction = req.body;
+	const projectId = req.params.id;
 
-router.get('/:id/actions', (req, res) => {
+	if (!newAction.description || !newAction.notes) {
+		return res.status(400).json({
+			errorMessage: 'Please provide description and notes for the action.',
+		});
+	}
+
 	actions
-		.get(req.params.id)
+		.insert(newAction, projectId)
+		.then((newAction) => {
+			res.status(200).json(newAction);
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(500).json({
+				error: 'There was an error while saving the action to the database.',
+			});
+		});
+});
+
+router.put('/:id', (req, res) => {
+	const changedActions = req.body;
+
+	actions
+		.update(req.params.id, changedActions)
 		.then((action) => {
 			if (!action) {
 				res
 					.status(404)
 					.json({ message: 'The action with the specified ID does not exist.' });
+			} else if (!changedActions.notes || !changedActions.description) {
+				res.status(400).json({
+					errorMessage: 'Please provide notes and description for the project.',
+				});
 			} else {
-				res.status(200).json(project);
+				res.status(200).json(action);
 			}
 		})
 		.catch((error) => {
-			console.log(error);
 			res.status(500).json({
-				error: 'The action information could not be retrieved.',
+				error: 'The action information could not be modified.',
 			});
 		});
 });
 
-router.post('/:id/actions', (req, res) => {
-	const newAction = req.body;
-	const projectId = req.params.id;
-	// if (!newProject.name || !newProject.description) {
-	// 	return res.status(400).json({
-	// 		errorMessage: 'Please provide name and description for the project.',
-	// 	});
-	// }
+router.delete('/:id', (req, res) => {
 	actions
-		.insert(newAction, projectId)
+		.remove(req.params.id)
 		.then((action) => {
-			res.status(200).json(newProject);
+			console.log(action);
+			if (action > 0) {
+				res.status(200).json({ id: Number(req.params.id) });
+			} else {
+				res
+					.status(404)
+					.json({ message: 'The action with the specified ID does not exist.' });
+			}
 		})
 		.catch((error) => {
-			console.log(error);
 			res.status(500).json({
-				error: 'There was an error while saving the project to the database.',
+				error: 'The action information could not be modified.',
 			});
 		});
 });
